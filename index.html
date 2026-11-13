@@ -126,7 +126,7 @@ body {
 .question-hint { font-size: 14px; font-weight: 700; color: #888; margin-top: 8px; }
 
 /* DRAG BALL */
-.ball-area { position: relative; width: 100%; height: 90px; display: flex; align-items: center; justify-content: center; }
+.ball-area { position: relative; width: 100%; height: 120px; display: flex; align-items: center; justify-content: center; }
 .drag-ball { width: 80px; height: 80px; font-size: 58px; line-height: 80px; text-align: center; cursor: grab; position: absolute; z-index: 10; transition: filter 0.15s; touch-action: none; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)); }
 .drag-ball.dragging { cursor: grabbing; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.5)) brightness(1.1); z-index: 20; }
 .drag-ball.locked { pointer-events: none; opacity: 0.4; }
@@ -178,6 +178,120 @@ body {
 .result-score { font-size: 18px; font-weight: 700; color: #4a7a5a; }
 
 #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
+
+/* DIFFICULTY BUTTONS */
+.diff-btn { width: 100%; border: none; border-radius: 26px; padding: 18px 20px; cursor: pointer; touch-action: manipulation; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 4px 16px; font-family: 'Nunito', sans-serif; color: var(--text-dark); background: rgba(255,255,255,0.95); box-shadow: 0 7px 0 rgba(0,0,0,0.2), 0 10px 24px var(--shadow); transition: transform 0.1s, box-shadow 0.1s; }
+.diff-btn:active { transform: translateY(4px); box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
+.diff-emoji { font-size: 48px; grid-row: 1 / span 2; }
+.diff-label { font-size: 34px; font-weight: 900; text-align: start; }
+.diff-sub { font-size: 18px; text-align: start; }
+.diff-stars { font-size: 22px; grid-column: 3; grid-row: 1 / span 2; }
+.diff-10 { background: #d9f5e0; }
+.diff-15 { background: #fff0c2; }
+.diff-20 { background: #ffd9dd; }
+
+/* KID */
+.ball-area { height: 165px !important; }
+.kid-wrap { position: absolute; bottom: 0; right: calc(50% + 34px); width: 88px; height: 168px; pointer-events: none; z-index: 5; }
+.kid-wrap svg, .res-kid svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.res-kid { width: 200px; height: 300px; margin: 0 auto; animation: pop-in 0.4s ease; }
+.kid g { transform-box: view-box; }
+.kid .mouth-open, .kid .mouth-sad, .kid .tear, .kid .cloud, .kid .trophy, .kid .sparks { display: none; }
+.kid.cheer .mouth-open, .kid.win .mouth-open { display: block; }
+.kid.cheer .mouth-smile, .kid.win .mouth-smile, .kid.sad .mouth-smile, .kid.oops .mouth-smile { display: none; }
+.kid.sad .mouth-sad, .kid.oops .mouth-sad { display: block; }
+.kid.sad .tear, .kid.sad .cloud { display: block; }
+.kid.win .trophy, .kid.win .sparks { display: block; }
+.kid .armL { transform-origin: 34px 56px; } .kid .armR { transform-origin: 66px 56px; }
+.kid .legL { transform-origin: 41px 106px; } .kid .legR { transform-origin: 59px 106px; }
+.kid .shinL { transform-origin: 41px 124px; } .kid .shinR { transform-origin: 59px 124px; }
+.kid .torso { transform-origin: 50px 100px; } .kid .head { transform-origin: 50px 46px; }
+.kid .dancer { transform-origin: 50px 150px; }
+/* idle */
+.kid.idle .dancer { animation: k-breathe 1.8s ease-in-out infinite; }
+@keyframes k-breathe { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+.kid.idle .armL { transform: rotate(8deg); } .kid.idle .armR { transform: rotate(-8deg); }
+/* run-up */
+.kid.run .legL { animation: k-thighA 0.3s linear 1; } .kid.run .legR { animation: k-thighB 0.3s linear 1; }
+.kid.run .shinL { animation: k-shinA 0.3s linear 1; } .kid.run .shinR { animation: k-shinB 0.3s linear 1; }
+.kid.run .armL { animation: k-armA 0.3s linear 1; } .kid.run .armR { animation: k-armB 0.3s linear 1; }
+.kid.run .torso { transform: rotate(4deg); }
+@keyframes k-thighA { 0%{transform:rotate(-32deg)} 50%{transform:rotate(30deg)} 100%{transform:rotate(-32deg)} }
+@keyframes k-thighB { 0%{transform:rotate(30deg)} 50%{transform:rotate(-32deg)} 100%{transform:rotate(30deg)} }
+@keyframes k-shinA { 0%{transform:rotate(0)} 50%{transform:rotate(55deg)} 100%{transform:rotate(0)} }
+@keyframes k-shinB { 0%{transform:rotate(55deg)} 50%{transform:rotate(0)} 100%{transform:rotate(55deg)} }
+@keyframes k-armA { 0%{transform:rotate(40deg)} 50%{transform:rotate(-40deg)} 100%{transform:rotate(40deg)} }
+@keyframes k-armB { 0%{transform:rotate(-40deg)} 50%{transform:rotate(40deg)} 100%{transform:rotate(-40deg)} }
+/* kick */
+.kid.kick .legR { animation: k-kickT 0.4s ease-in-out forwards; }
+.kid.kick .shinR { animation: k-kickS 0.4s ease-in-out forwards; }
+.kid.kick .legL { transform: rotate(6deg); }
+.kid.kick .torso { animation: k-lean 0.4s ease-in-out forwards; }
+.kid.kick .armL { animation: k-kArmL 0.4s ease-in-out forwards; } .kid.kick .armR { animation: k-kArmR 0.4s ease-in-out forwards; }
+@keyframes k-kickT { 0%{transform:rotate(-20deg)} 40%{transform:rotate(38deg)} 65%{transform:rotate(-62deg)} 100%{transform:rotate(-38deg)} }
+@keyframes k-kickS { 0%{transform:rotate(20deg)} 40%{transform:rotate(85deg)} 65%{transform:rotate(-8deg)} 100%{transform:rotate(12deg)} }
+@keyframes k-lean { 0%{transform:rotate(4deg)} 40%{transform:rotate(-7deg)} 65%{transform:rotate(9deg)} 100%{transform:rotate(7deg)} }
+@keyframes k-kArmL { 0%{transform:rotate(30deg)} 65%{transform:rotate(-70deg)} 100%{transform:rotate(-60deg)} }
+@keyframes k-kArmR { 0%{transform:rotate(-30deg)} 65%{transform:rotate(70deg)} 100%{transform:rotate(55deg)} }
+/* cheer after goal */
+.kid.cheer .dancer { animation: k-jump 0.45s ease-out 2; }
+@keyframes k-jump { 0%,100%{transform:translateY(0)} 45%{transform:translateY(-22px)} }
+.kid.cheer .armL { transform: rotate(155deg); } .kid.cheer .armR { transform: rotate(-155deg); }
+.kid.cheer .legL, .kid.cheer .legR { transform: rotate(0); }
+/* oops after wrong */
+.kid.oops .head { animation: k-shake 0.5s ease-in-out 2; }
+@keyframes k-shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-9deg)} 75%{transform:rotate(9deg)} }
+.kid.oops .torso { transform: rotate(5deg); }
+.kid.oops .armL { transform: rotate(5deg); } .kid.oops .armR { transform: rotate(-5deg); }
+/* win dance */
+.kid.win .dancer { animation: k-dance 0.8s ease-in-out infinite; }
+@keyframes k-dance { 0%,100%{transform:translateY(0) rotate(-6deg)} 25%{transform:translateY(-14px) rotate(0)} 50%{transform:translateY(0) rotate(6deg)} 75%{transform:translateY(-14px) rotate(0)} }
+.kid.win .legL { animation: k-lw1 0.8s ease-in-out infinite; } .kid.win .legR { animation: k-lw2 0.8s ease-in-out infinite; }
+.kid.win .shinL { animation: k-sw1 0.8s ease-in-out infinite; } .kid.win .shinR { animation: k-sw2 0.8s ease-in-out infinite; }
+@keyframes k-lw1 { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-28deg)} 50%{transform:rotate(0)} }
+@keyframes k-lw2 { 0%,100%{transform:rotate(0)} 75%{transform:rotate(28deg)} 50%{transform:rotate(0)} }
+@keyframes k-sw1 { 0%,100%{transform:rotate(0)} 25%{transform:rotate(40deg)} 50%{transform:rotate(0)} }
+@keyframes k-sw2 { 0%,100%{transform:rotate(0)} 75%{transform:rotate(-40deg)} 50%{transform:rotate(0)} }
+.kid.win .head { animation: k-nod 0.4s ease-in-out infinite alternate; }
+@keyframes k-nod { from{transform:rotate(-5deg)} to{transform:rotate(5deg)} }
+.kid.win .trophy { animation: k-troph 0.4s ease-in-out infinite alternate; transform-origin: 80px 14px; }
+@keyframes k-troph { from{transform:rotate(-9deg) translateY(0)} to{transform:rotate(9deg) translateY(-4px)} }
+.kid.win .sparks { animation: k-twinkle 0.6s ease-in-out infinite alternate; transform-origin: 50px -6px; }
+@keyframes k-twinkle { from{opacity:.35;transform:scale(.85)} to{opacity:1;transform:scale(1.1)} }
+/* sad */
+.kid.sad .dancer { animation: k-slump 2.4s ease-in-out infinite; }
+@keyframes k-slump { 0%,100%{transform:rotate(-1.5deg)} 50%{transform:rotate(1.5deg)} }
+.kid.sad .head { transform: translateY(5px) rotate(10deg); }
+.kid.sad .torso { transform: rotate(4deg); }
+.kid.sad .armL { transform: rotate(-4deg); } .kid.sad .armR { transform: rotate(4deg); }
+.kid.sad .tear { animation: k-tear 1.1s ease-in infinite; }
+@keyframes k-tear { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(24px);opacity:0} }
+.kid.sad .drop { animation: k-rain 0.7s linear infinite; }
+.kid.sad .drop:nth-child(2) { animation-delay: .23s; } .kid.sad .drop:nth-child(3) { animation-delay: .46s; }
+@keyframes k-rain { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(22px);opacity:0} }
+/* effects */
+.dust { position: fixed; width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,.75); pointer-events: none; z-index: 40; animation: dust-up .55s ease-out forwards; }
+@keyframes dust-up { 0%{transform:translate(0,0) scale(.4);opacity:.9} 100%{transform:translate(var(--dx),var(--dy)) scale(1.6);opacity:0} }
+.spark { position: fixed; font-size: 26px; pointer-events: none; z-index: 60; animation: spark-out .8s ease-out forwards; }
+@keyframes spark-out { 0%{transform:translate(0,0) scale(.3);opacity:1} 100%{transform:translate(var(--dx),var(--dy)) scale(1.2);opacity:0} }
+.goal-post.net-hit { animation: net-bulge .5s ease-out; }
+@keyframes net-bulge { 0%{transform:scale(1)} 30%{transform:scale(1.12,1.08)} 60%{transform:scale(.97)} 100%{transform:scale(1)} }
+.goal-zone { cursor: pointer; touch-action: manipulation; }
+
+/* RESULT SCENES */
+.res-kid { position: relative; isolation: isolate; }
+.res-kid svg { position: relative; z-index: 2; }
+.res-kid::before { content: ''; position: absolute; left: 50%; top: 42%; width: 380px; height: 380px; margin: -190px 0 0 -190px; z-index: 0; border-radius: 50%; opacity: 0; }
+.res-kid.win-scene::before { opacity: 1; background: repeating-conic-gradient(from 0deg, rgba(255,226,52,.55) 0 10deg, rgba(255,226,52,0) 10deg 22deg); -webkit-mask-image: radial-gradient(circle, #000 25%, transparent 68%); mask-image: radial-gradient(circle, #000 25%, transparent 68%); animation: rays-spin 12s linear infinite; }
+@keyframes rays-spin { to { transform: rotate(360deg); } }
+.res-kid.win-scene svg { animation: kid-enter 0.8s cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes kid-enter { 0%{transform:translateY(120px) scale(.5);opacity:0} 100%{transform:translateY(0) scale(1);opacity:1} }
+.res-kid.sad-scene svg { animation: kid-sink 1s ease-out both; }
+@keyframes kid-sink { 0%{transform:translateY(-30px);opacity:0} 100%{transform:translateY(0);opacity:1} }
+.res-kid.sad-scene::before { opacity: .55; background: repeating-linear-gradient(105deg, rgba(91,184,240,.0) 0 14px, rgba(91,184,240,.6) 14px 16px); -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 70%); mask-image: radial-gradient(circle, #000 20%, transparent 70%); animation: rain-fall 0.6s linear infinite; }
+@keyframes rain-fall { from { background-position: 0 0; } to { background-position: -12px 30px; } }
+.orbit { position: absolute; font-size: 28px; z-index: 3; animation: twinkle 1.2s ease-in-out infinite alternate; pointer-events: none; }
+@keyframes twinkle { from{transform:scale(.6) rotate(-15deg);opacity:.4} to{transform:scale(1.2) rotate(15deg);opacity:1} }
 </style>
 </head>
 <body>
@@ -207,7 +321,7 @@ body {
   </div>
   <div class="howto">
     <div class="howto-row"><span class="howto-icon">👀</span><span>ראה את השאלה</span></div>
-    <div class="howto-row"><span class="howto-icon">⚽</span><span>גרור את הכדור לשער הנכון</span></div>
+    <div class="howto-row"><span class="howto-icon">👆</span><span>לחץ על השער, והילד יבעט!</span></div>
     <div class="howto-row"><span class="howto-icon">🏆</span><span>צבור כוכבים!</span></div>
   </div>
   <button class="btn btn-go" onclick="showLevelMap()">▶ יאללה!</button>
@@ -216,7 +330,7 @@ body {
 <!-- LEVEL MAP SCREEN -->
 <div id="screen-map" class="screen">
   <div class="map-title-card">
-    <div class="map-title">⚽ בחר שלב</div>
+    <div class="map-title">⚽ בחר קושי</div>
   </div>
   <div class="levels-grid" id="levels-grid"></div>
   <button class="btn btn-small" onclick="showTitle()">← חזרה</button>
@@ -231,9 +345,10 @@ body {
   </div>
   <div class="question-card">
     <div class="question-text" id="question-text"></div>
-    <div class="question-hint">גרור את הכדור לשער הנכון ⬇️</div>
+    <div class="question-hint">לחץ על השער הנכון 👆</div>
   </div>
   <div class="ball-area" id="ball-area">
+    <div class="kid-wrap" id="kid-wrap"></div>
     <div class="drag-ball" id="drag-ball" draggable="false">⚽</div>
   </div>
   <div class="goals-row" id="goals-row"></div>
@@ -243,13 +358,12 @@ body {
 <!-- RESULT SCREEN -->
 <div id="screen-result" class="screen">
   <div class="result-card">
-    <div class="result-emoji" id="res-emoji">🏆</div>
+    <div class="res-kid" id="res-kid"></div>
     <div class="result-title" id="res-title">כל הכבוד!</div>
     <div class="result-stars" id="res-stars">⭐⭐⭐</div>
     <div class="result-score" id="res-score"></div>
-    <button class="btn btn-go" id="res-next-btn" style="margin-top:8px">➡️ השלב הבא!</button>
-    <button class="btn btn-go" onclick="showLevelMap()" style="background:#3fb560;box-shadow:0 7px 0 #1a5c2a">🗺️ בחר שלב</button>
-    <button class="btn btn-small" onclick="retryLevel()">🔄 שוב!</button>
+    <button class="btn btn-go" onclick="retryLevel()" style="margin-top:8px">🔄 שוב!</button>
+    <button class="btn btn-go" onclick="showLevelMap()" style="background:#3fb560;box-shadow:0 7px 0 #1a5c2a">🎚️ בחר קושי</button>
   </div>
 </div>
 <script>
@@ -322,25 +436,26 @@ function playFailSound() {
 function makeAdd(a, b)  { return { display: `${a} + ${b} = ?`, answer: a+b }; }
 function makeSub(a, b)  { return { display: `${a} \u2212 ${b} = ?`, answer: a-b }; }
 
-// Build pool for addition level: all pairs where answer is in [minAns..maxAns]
-function addPool(minAns, maxAns) {
+// No exercise includes 0 or 1 (neither as a number in the exercise nor as the result).
+// Addition: both numbers >= 2, sum in [minSum..maxSum]
+function addPool(minSum, maxSum) {
   const p = [];
-  for (let s = minAns; s <= maxAns; s++)
-    for (let a = 0; a <= s; a++) p.push(makeAdd(a, s-a));
+  for (let s = minSum; s <= maxSum; s++)
+    for (let a = Math.max(2, s - 10); a <= Math.min(10, s - 2); a++) p.push(makeAdd(a, s - a));
   return p;
 }
 
-// Build pool for subtraction level: minuend up to maxMinuend, result 0..maxMinuend
-function subPool(maxMinuend) {
+// Subtraction: minuend in [minA..maxA], subtracted number >= 2, result >= 2
+function subPool(minA, maxA) {
   const p = [];
-  for (let a = 1; a <= maxMinuend; a++)
-    for (let b = 0; b <= a; b++) p.push(makeSub(a, b));
+  for (let a = minA; a <= maxA; a++)
+    for (let b = 2; b <= Math.min(10, a - 2); b++) p.push(makeSub(a, b));
   return p;
 }
 
-// Build mixed pool: add (answer 0..max) + sub (minuend 0..max)
-function mixPool(max) {
-  return [...addPool(0, max), ...subPool(max)];
+// Mixed: addition and subtraction of the same difficulty range
+function mixPool(min, max) {
+  return [...addPool(min, max), ...subPool(min, max)];
 }
 
 // Pick 10 questions with repetition: shuffle pool, cycle if needed,
@@ -364,62 +479,23 @@ function pick10(pool) {
   return selected.slice(0, 10);
 }
 
-// ===== LEVEL DEFINITIONS =====
-// round=1 is first playthrough, round=2 is "סיבוב 2" (same levels, unlocked after finishing all)
-const LEVEL_DEFS = [
-  // --- קבוצה 1: חיבור עד 10 ---
-  { id:1,  group:1, type:'add', emoji:'⚽', pool:()=>addPool(1,2)       },
-  { id:2,  group:1, type:'add', emoji:'🌱', pool:()=>addPool(1,3)       },
-  { id:3,  group:1, type:'add', emoji:'🌿', pool:()=>addPool(2,4)       },
-  { id:4,  group:1, type:'add', emoji:'🌟', pool:()=>addPool(3,5)       },
-  { id:5,  group:1, type:'add', emoji:'💫', pool:()=>addPool(3,6)       },
-  { id:6,  group:1, type:'add', emoji:'🎯', pool:()=>addPool(4,7)       },
-  { id:7,  group:1, type:'add', emoji:'🔥', pool:()=>addPool(5,8)       },
-  { id:8,  group:1, type:'add', emoji:'💎', pool:()=>addPool(6,9)       },
-  { id:9,  group:1, type:'add', emoji:'🏅', pool:()=>addPool(7,10)      },
-  { id:10, group:1, type:'add', emoji:'🏆', pool:()=>addPool(1,10)      },
-  // --- קבוצה 2: חיסור עד 10 ---
-  { id:11, group:2, type:'sub', emoji:'⚽', pool:()=>subPool(4)         },
-  { id:12, group:2, type:'sub', emoji:'🌱', pool:()=>subPool(5)         },
-  { id:13, group:2, type:'sub', emoji:'🌿', pool:()=>subPool(6)         },
-  { id:14, group:2, type:'sub', emoji:'🌟', pool:()=>subPool(7)         },
-  { id:15, group:2, type:'sub', emoji:'💫', pool:()=>subPool(8)         },
-  { id:16, group:2, type:'sub', emoji:'🎯', pool:()=>subPool(9)         },
-  { id:17, group:2, type:'sub', emoji:'🔥', pool:()=>subPool(10)        },
-  { id:18, group:2, type:'sub', emoji:'💎', pool:()=>subPool(10)        },
-  { id:19, group:2, type:'sub', emoji:'🏅', pool:()=>subPool(10)        },
-  { id:20, group:2, type:'sub', emoji:'🏆', pool:()=>subPool(10)        },
-  // --- קבוצה 3: מעורב חיבור+חיסור עד 10 ---
-  { id:21, group:3, type:'mix', emoji:'⚽', pool:()=>mixPool(3)         },
-  { id:22, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(4)         },
-  { id:23, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(5)         },
-  { id:24, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(6)         },
-  { id:25, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(7)         },
-  { id:26, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(8)         },
-  { id:27, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(9)         },
-  { id:28, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(10)        },
-  { id:29, group:3, type:'mix', emoji:'🌈', pool:()=>mixPool(10)        },
-  { id:30, group:3, type:'mix', emoji:'🏆', pool:()=>mixPool(10)        },
-];
-
-const GROUPS_META = [
-  { id:1, label:'➕ חיבור עד 10',      ids:[1,2,3,4,5,6,7,8,9,10]       },
-  { id:2, label:'➖ חיסור עד 10',      ids:[11,12,13,14,15,16,17,18,19,20] },
-  { id:3, label:'🔀 מעורב עד 10',      ids:[21,22,23,24,25,26,27,28,29,30] },
-];
-
-// Round 2: same structure, ids 31–60
-const ROUND2_OFFSET = 30;
+// ===== DIFFICULTIES =====
+// Each difficulty = mixed addition + subtraction, never with 0 or 1.
+const DIFFICULTIES = {
+  10: { emoji:'🌱', label:'עד 10', pool:()=>mixPool(4,10)  },
+  15: { emoji:'🔥', label:'עד 15', pool:()=>mixPool(8,15)  },
+  20: { emoji:'🚀', label:'עד 20', pool:()=>mixPool(12,20) },
+};
 
 // ===== STATE =====
 let state = loadState();
 let game  = {};
 
 function loadState() {
-  try { const s = localStorage.getItem('football-math-v4'); if (s) return JSON.parse(s); } catch(e) {}
-  return { unlocked: 1, stars: {}, round2unlocked: false };
+  try { const s = localStorage.getItem('football-math-v5'); if (s) return JSON.parse(s); } catch(e) {}
+  return { stars: {} };
 }
-function saveState() { localStorage.setItem('football-math-v4', JSON.stringify(state)); }
+function saveState() { localStorage.setItem('football-math-v5', JSON.stringify(state)); }
 
 // ===== SCREENS =====
 function showScreen(id) {
@@ -430,67 +506,30 @@ function showTitle()    { showScreen('title'); }
 function showLevelMap() { renderLevelMap(); showScreen('map'); }
 function exitGame()     { clearDragListeners(); showLevelMap(); }
 
-// ===== MAP =====
-function getLevelDef(id) {
-  if (id <= 30) return LEVEL_DEFS[id - 1];
-  // Round 2: same def but different id
-  const def = LEVEL_DEFS[id - ROUND2_OFFSET - 1];
-  return { ...def, id, round: 2 };
-}
-
+// ===== DIFFICULTY SCREEN =====
 function renderLevelMap() {
   const grid = document.getElementById('levels-grid');
   grid.innerHTML = '';
-
-  const rounds = [
-    { label: 'סיבוב 1', groups: GROUPS_META, offset: 0 },
-    ...(state.round2unlocked ? [{ label: 'סיבוב 2 🔄', groups: GROUPS_META, offset: ROUND2_OFFSET }] : []),
-  ];
-
-  rounds.forEach(round => {
-    const roundHeader = document.createElement('div');
-    roundHeader.className = 'group-header';
-    roundHeader.style.background = round.offset > 0 ? 'rgba(80,0,120,0.5)' : 'rgba(0,0,0,0.25)';
-    roundHeader.textContent = round.label;
-    grid.appendChild(roundHeader);
-
-    round.groups.forEach(grp => {
-      const grpHeader = document.createElement('div');
-      grpHeader.className = 'group-header';
-      grpHeader.style.fontSize = '13px';
-      grpHeader.textContent = grp.label;
-      grid.appendChild(grpHeader);
-
-      const row = document.createElement('div');
-      row.className = 'levels-row';
-      grp.ids.forEach((baseId, idx) => {
-        const id     = baseId + round.offset;
-        const def    = getLevelDef(id);
-        const locked = id > state.unlocked;
-        const stars  = state.stars[id] || 0;
-        const btn    = document.createElement('button');
-        btn.className = 'level-btn' + (locked ? ' locked' : '') + (id === state.unlocked ? ' current' : '');
-        const typeIcon = def.type==='add'?'➕': def.type==='sub'?'➖':'🔀';
-        btn.innerHTML = `
-          <div class="lv-num">${idx+1}</div>
-          <div class="lv-emoji">${def.emoji}</div>
-          <div class="lv-maxval">${typeIcon}</div>
-          <div class="lv-stars">${stars>0?'⭐'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆'}</div>
-        `;
-        if (!locked) btn.onclick = () => startLevel(id);
-        row.appendChild(btn);
-      });
-      grid.appendChild(row);
-    });
+  Object.keys(DIFFICULTIES).forEach(key => {
+    const d = DIFFICULTIES[key];
+    const stars = state.stars[key] || 0;
+    const btn = document.createElement('button');
+    btn.className = 'diff-btn diff-' + key;
+    btn.innerHTML = `
+      <div class="diff-emoji">${d.emoji}</div>
+      <div class="diff-label">${d.label}</div>
+      <div class="diff-sub">➕ ➖</div>
+      <div class="diff-stars">${stars>0?'⭐'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆'}</div>
+    `;
+    btn.onclick = () => startLevel(key);
+    grid.appendChild(btn);
   });
 }
 
 // ===== GAME =====
-function startLevel(id) {
-  const def = getLevelDef(id);
-  const pool = def.pool();
-  const questions = pick10(pool);
-  game = { levelId: id, def, questions, qi: 0, lives: 3, correct: 0, answered: false };
+function startLevel(key) {
+  const def = DIFFICULTIES[key];
+  game = { levelId: key, def, questions: pick10(def.pool()), qi: 0, lives: 3, correct: 0, answered: false };
   showScreen('game');
   updateHUD();
   renderQuestion();
@@ -517,6 +556,7 @@ function renderQuestion() {
   const ball = document.getElementById('drag-ball');
   ball.style.position=''; ball.style.left=''; ball.style.top='';
   ball.classList.remove('locked');
+  cancelBallAnim(); game.kicking=false; setKidIdle();
   buildGoals(q.answer);
   setupDrag();
 }
@@ -539,6 +579,7 @@ function buildGoals(correct) {
     const zone = document.createElement('div');
     zone.className = 'goal-zone'; zone.dataset.val = val;
     zone.innerHTML = `<div class="goal-post">${val}</div><div class="goal-net"></div>`;
+    zone.addEventListener('click', () => kickTo(zone));
     row.appendChild(zone);
   });
 }
@@ -551,7 +592,7 @@ function setupDrag() {
   clearDragListeners();
   const ball = document.getElementById('drag-ball');
   const onStart = e => {
-    if (game.answered) return;
+    if (game.answered||game.kicking) return;
     unlockAudio(); e.preventDefault();
     const pt=getPoint(e), rect=ball.getBoundingClientRect();
     dragState={ offsetX:pt.x-(rect.left+rect.width/2), offsetY:pt.y-(rect.top+rect.height/2) };
@@ -569,7 +610,7 @@ function setupDrag() {
     ball.classList.remove('dragging');
     const pt=getLastPoint(e), goal=getGoalAtPoint(pt.x,pt.y);
     clearGoalHighlights();
-    if (goal) checkAnswer(parseInt(goal.dataset.val), goal.querySelector('.goal-post'));
+    if (goal) kickTo(goal);
     else snapBack();
     dragState=null;
   };
@@ -603,6 +644,120 @@ function getGoalAtPoint(x,y) {
   return null;
 }
 
+
+// ===== KID =====
+function kidSVG(mode) {
+  const skin='#f4c28d', skinD='#e0a56e', jersey='#D62027', jerseyD='#9e141a', trim='#ffffff', hair='#4a2c14';
+  const leg=(side,x)=>`<g class="leg${side}"><line x1="${x}" y1="106" x2="${x}" y2="124" stroke="${skin}" stroke-width="12" stroke-linecap="round"/>
+      <g class="shin${side}"><line x1="${x}" y1="124" x2="${x}" y2="141" stroke="${skin}" stroke-width="11" stroke-linecap="round"/>
+        <rect x="${x-6.5}" y="128" width="13" height="15" rx="3" fill="${jersey}"/><rect x="${x-6.5}" y="132" width="13" height="3" fill="${trim}"/>
+        <path d="M${x-8} 141 h17 q6 0 6 5 v2 h-23 z" fill="#fff" stroke="#222" stroke-width="1.6" stroke-linejoin="round"/><rect x="${x-8}" y="146.5" width="23" height="3" rx="1.5" fill="#222"/></g></g>`;
+  const arm=(side,x)=>`<g class="arm${side}"><line x1="${x}" y1="56" x2="${x}" y2="94" stroke="${skin}" stroke-width="10" stroke-linecap="round"/><rect x="${x-7}" y="48" width="14" height="17" rx="6" fill="${jersey}"/></g>`;
+  let winArms='', winExtra='';
+  if (mode==='win') {
+    winArms=`<line x1="34" y1="56" x2="14" y2="14" stroke="${skin}" stroke-width="10" stroke-linecap="round"/><rect x="26" y="46" width="14" height="17" rx="6" fill="${jersey}" transform="rotate(25 33 54)"/><circle cx="13" cy="12" r="6" fill="${skin}"/>
+      <line x1="66" y1="56" x2="82" y2="16" stroke="${skin}" stroke-width="10" stroke-linecap="round"/><rect x="60" y="46" width="14" height="17" rx="6" fill="${jersey}" transform="rotate(-22 67 54)"/>`;
+    winExtra=`<g class="trophy"><path d="M70 -30 H92 V-18 Q92 -4 81 -4 Q70 -4 70 -18 Z" fill="#FFD21F" stroke="#b8860b" stroke-width="2.5" stroke-linejoin="round"/><path d="M70 -26 Q60 -26 62 -16 Q64 -9 72 -10" fill="none" stroke="#b8860b" stroke-width="3"/><path d="M92 -26 Q102 -26 100 -16 Q98 -9 90 -10" fill="none" stroke="#b8860b" stroke-width="3"/><rect x="77" y="-4" width="8" height="8" fill="#FFD21F" stroke="#b8860b" stroke-width="2"/><rect x="71" y="4" width="20" height="6" rx="2" fill="#b8860b"/><circle cx="81" cy="12" r="6.5" fill="${skin}"/><ellipse cx="78" cy="-22" rx="3" ry="6" fill="#fff6b0" opacity=".8"/></g>
+      <g class="sparks" fill="#FFD21F"><path d="M22 -18 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5z"/><path d="M52 -26 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#fff"/><path d="M104 8 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/></g>`;
+  }
+  const cloud=`<g class="cloud"><ellipse cx="50" cy="-14" rx="22" ry="9" fill="#8a97a6"/><ellipse cx="38" cy="-18" rx="11" ry="9" fill="#8a97a6"/><ellipse cx="60" cy="-19" rx="12" ry="10" fill="#8a97a6"/><g fill="#5bb8f0"><ellipse class="drop" cx="40" cy="-4" rx="1.8" ry="3.2"/><ellipse class="drop" cx="50" cy="-4" rx="1.8" ry="3.2"/><ellipse class="drop" cx="60" cy="-4" rx="1.8" ry="3.2"/></g></g>`;
+  return `<svg class="kid ${mode}" viewBox="0 -36 100 192" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="50" cy="150" rx="32" ry="5" fill="rgba(0,0,0,0.22)"/>
+  <g class="dancer">
+    ${leg('L',41)}${leg('R',59)}
+    <g class="torso">
+      ${mode==='win'?'':arm('L',34)}
+      <path d="M31 50 Q50 44 69 50 L68 92 Q50 96 32 92 Z" fill="${jersey}" stroke="${jerseyD}" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M42 48 L50 58 L58 48" fill="none" stroke="${trim}" stroke-width="3.2" stroke-linejoin="round"/>
+      <text x="50" y="80" text-anchor="middle" font-size="15" font-weight="900" fill="${trim}" font-family="Nunito, sans-serif">10</text>
+      <path d="M31 88 H69 L71 108 H52 L50 100 L48 108 H29 Z" fill="${trim}" stroke="#d8dde0" stroke-width="1.5" stroke-linejoin="round"/>
+      ${mode==='win'?winArms:arm('R',66)}
+    </g>
+    <g class="head">
+      <ellipse cx="30.5" cy="29" rx="4" ry="5" fill="${skin}"/><ellipse cx="69.5" cy="29" rx="4" ry="5" fill="${skin}"/>
+      <circle cx="50" cy="27" r="20" fill="${skin}"/>
+      <path d="M30 26 Q28 4 50 5 Q72 4 70 26 Q64 14 54 15 Q44 11 36 17 Q32 20 30 26 Z" fill="${hair}"/>
+      <ellipse cx="42" cy="28" rx="4" ry="4.6" fill="#fff"/><ellipse cx="58" cy="28" rx="4" ry="4.6" fill="#fff"/>
+      <circle cx="43" cy="29" r="2.4" fill="#222"/><circle cx="59" cy="29" r="2.4" fill="#222"/>
+      <circle cx="44" cy="28" r=".8" fill="#fff"/><circle cx="60" cy="28" r=".8" fill="#fff"/>
+      ${mode==='sad'||mode==='oops'?`<path d="M37 22 L46 24.5 M63 22 L54 24.5" stroke="${hair}" stroke-width="2.6" stroke-linecap="round" fill="none"/>`:''}
+      <circle cx="35" cy="36" r="3.6" fill="#f08a7a" opacity=".5"/><circle cx="65" cy="36" r="3.6" fill="#f08a7a" opacity=".5"/>
+      <path class="mouth-smile" d="M43 38 Q50 45 57 38" fill="none" stroke="#7a1f1f" stroke-width="2.8" stroke-linecap="round"/>
+      <path class="mouth-open" d="M42 37 Q50 51 58 37 Z" fill="#7a1f1f" stroke="#7a1f1f" stroke-width="2" stroke-linejoin="round"/>
+      <path class="mouth-sad" d="M43 43 Q50 36 57 43" fill="none" stroke="#7a1f1f" stroke-width="2.8" stroke-linecap="round"/>
+      <path class="tear" d="M38 34 q-3.5 6 0 8 q3.5 -2 0 -8z" fill="#5bb8f0"/>
+    </g>
+    ${winExtra}${cloud}
+  </g></svg>`;
+}
+function kidEl() { return document.querySelector('#kid-wrap svg'); }
+function kidMood(m) { const k=kidEl(); if(k) k.setAttribute('class','kid '+m); }
+function setKidIdle() {
+  const w=document.getElementById('kid-wrap'); if(!w) return;
+  w.getAnimations().forEach(a=>a.cancel());
+  w.innerHTML=kidSVG('idle');
+}
+
+// ===== EFFECTS =====
+function dustPuff(x,y) {
+  for (let i=0;i<5;i++) {
+    const d=document.createElement('div'); d.className='dust';
+    d.style.left=(x-8)+'px'; d.style.top=(y-8)+'px';
+    d.style.setProperty('--dx',(-30+Math.random()*60)+'px'); d.style.setProperty('--dy',(-6-Math.random()*22)+'px');
+    document.body.appendChild(d); setTimeout(()=>d.remove(),600);
+  }
+}
+function sparkBurst(x,y) {
+  const em=['⭐','✨','⚽','🌟'];
+  for (let i=0;i<8;i++) {
+    const a=(Math.PI*2*i)/8, r=50+Math.random()*30;
+    const sp=document.createElement('div'); sp.className='spark'; sp.textContent=em[i%4];
+    sp.style.left=(x-13)+'px'; sp.style.top=(y-13)+'px';
+    sp.style.setProperty('--dx',Math.cos(a)*r+'px'); sp.style.setProperty('--dy',Math.sin(a)*r+'px');
+    document.body.appendChild(sp); setTimeout(()=>sp.remove(),850);
+  }
+}
+
+// ===== KICK =====
+function cancelBallAnim() { const b=document.getElementById('drag-ball'); b.getAnimations().forEach(a=>a.cancel()); b.style.zIndex=''; }
+function kickTo(zone) {
+  if (game.answered || game.kicking) return;
+  unlockAudio();
+  game.kicking = true;
+  clearDragListeners(); clearGoalHighlights();
+  const ball = document.getElementById('drag-ball');
+  snapBack(); cancelBallAnim();
+  const val = parseInt(zone.dataset.val), post = zone.querySelector('.goal-post');
+  const wrap = document.getElementById('kid-wrap');
+  // 1) run-up
+  kidMood('run');
+  wrap.animate([{transform:'translateX(0)'},{transform:'translateX(26px)'}],{duration:300,easing:'linear',fill:'forwards'});
+  // 2) kick
+  setTimeout(() => kidMood('kick'), 300);
+  // 3) contact: ball flies
+  setTimeout(() => {
+    const br = ball.getBoundingClientRect(), gr = post.getBoundingClientRect();
+    dustPuff(br.left+br.width/2-30, br.bottom-6);
+    const dx = (gr.left+gr.width/2) - (br.left+br.width/2);
+    const dy = (gr.top+gr.height/2) - (br.top+br.height/2);
+    ball.style.zIndex = 50;
+    const anim = ball.animate([
+      { transform:'translate(0,0) scale(1.25,0.8) rotate(0deg)', offset:0 },
+      { transform:'translate(0,0) scale(1) rotate(30deg)', offset:0.08 },
+      { transform:`translate(${dx*0.55}px,${dy*0.55-80}px) scale(0.85) rotate(420deg)`, offset:0.55 },
+      { transform:`translate(${dx}px,${dy}px) scale(0.55) rotate(760deg)`, offset:1 }
+    ], { duration: 650, easing:'ease-in', fill:'forwards' });
+    anim.onfinish = () => {
+      game.kicking = false;
+      if (!document.getElementById('screen-game').classList.contains('active')) return;
+      const gr2 = post.getBoundingClientRect();
+      if (val === game.questions[game.qi].answer) { post.classList.add('net-hit'); sparkBurst(gr2.left+gr2.width/2, gr2.top+gr2.height/2); kidMood('cheer'); }
+      else kidMood('oops');
+      checkAnswer(val, post);
+    };
+  }, 560);
+}
+
 // ===== CHECK ANSWER =====
 function checkAnswer(val, goalPost) {
   if (game.answered) return;
@@ -630,7 +785,7 @@ function checkAnswer(val, goalPost) {
     setTimeout(() => {
       hideRedCard();
       if (game.lives <= 0) { endGame(); return; }
-      snapBack();
+      snapBack(); cancelBallAnim(); setKidIdle();
       ball.classList.remove('locked');
       buildGoals(q.answer);
       game.answered = false;
@@ -657,26 +812,14 @@ function endGame() {
   const prev = state.stars[game.levelId]||0;
   if (stars>prev) state.stars[game.levelId]=stars;
 
-  if (passed) {
-    if (game.levelId>=state.unlocked && game.levelId<60) state.unlocked=game.levelId+1;
-    // Unlock round 2 when all 30 first-round levels done
-    if (game.levelId===30 && !state.round2unlocked) {
-      state.round2unlocked=true;
-      state.unlocked=31; // start round 2
-    }
-  }
   saveState();
 
-  document.getElementById('res-emoji').textContent = passed?'🏆':'😅';
+  { const rk=document.getElementById('res-kid');
+    rk.className='res-kid '+(passed?'win-scene':'sad-scene');
+    rk.innerHTML = kidSVG(passed?'win':'sad') + (passed ? ['⭐:6%:18%:0s','✨:88%:12%:.3s','🌟:2%:55%:.6s','⭐:92%:50%:.2s','✨:12%:84%:.5s','🌟:84%:82%:.1s'].map(t=>{const[e,x,y,d]=t.split(':');return `<span class="orbit" style="left:${x};top:${y};animation-delay:${d}">${e}</span>`;}).join('') : ''); }
   document.getElementById('res-title').textContent  = passed?'כל הכבוד!':'נסה שוב!';
   document.getElementById('res-stars').textContent  = '⭐'.repeat(stars)+'☆'.repeat(3-stars);
   document.getElementById('res-score').textContent  = `${correct} מתוך 10 נכונות`;
-
-  const nextBtn = document.getElementById('res-next-btn');
-  if (passed && game.levelId<60) {
-    nextBtn.style.display='';
-    nextBtn.onclick=()=>startLevel(game.levelId+1);
-  } else { nextBtn.style.display='none'; }
 
   showScreen('result');
   if (passed) { launchConfetti(3200); setTimeout(playWinSound,150); }
