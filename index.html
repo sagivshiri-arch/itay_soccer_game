@@ -292,6 +292,21 @@ body {
 @keyframes rain-fall { from { background-position: 0 0; } to { background-position: -12px 30px; } }
 .orbit { position: absolute; font-size: 28px; z-index: 3; animation: twinkle 1.2s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes twinkle { from{transform:scale(.6) rotate(-15deg);opacity:.4} to{transform:scale(1.2) rotate(15deg);opacity:1} }
+
+/* PARENT */
+.parent-btn.holding { background: rgba(255,226,52,.55); transition: background 1s linear; }
+.parent-btn { touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; position: relative; z-index: 5; background: rgba(0,0,0,.18); border-radius: 20px; border: none; color: #fff; font-family: inherit; font-size: 14px; font-weight: 700; padding: 8px; margin-top: 4px; }
+.p-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.p-card { background: rgba(255,255,255,.95); border-radius: 16px; padding: 10px 4px; text-align: center; box-shadow: 0 4px 0 rgba(0,0,0,.15); }
+.p-card b { display: block; font-size: 28px; font-weight: 900; color: var(--text-dark); }
+.p-card span { font-size: 13px; font-weight: 800; color: #4a7a5a; }
+.p-box { background: rgba(255,255,255,.95); border-radius: 18px; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 0 rgba(0,0,0,.15); }
+.p-box h3 { font-size: 17px; font-weight: 900; color: var(--text-dark); margin-bottom: 8px; }
+.p-table { width: 100%; border-collapse: collapse; font-size: 14px; font-weight: 700; color: var(--text-dark); text-align: center; }
+.p-table th { font-size: 12px; color: #4a7a5a; padding: 4px 2px; border-bottom: 2px solid #dfeee3; }
+.p-table td { padding: 6px 2px; border-bottom: 1px solid #eef5f0; }
+.p-table td.ok { color: #1a8a3a; } .p-table td.bad { color: #d6202e; }
+.p-reset { background: none; border: none; color: #fff; font-family: inherit; font-size: 13px; text-decoration: underline; margin: 6px 0; }
 </style>
 </head>
 <body>
@@ -325,6 +340,7 @@ body {
     <div class="howto-row"><span class="howto-icon">🏆</span><span>צבור כוכבים!</span></div>
   </div>
   <button class="btn btn-go" onclick="showLevelMap()">▶ יאללה!</button>
+  <button class="parent-btn" id="parent-btn">👨‍👩‍👦 להורים (לחיצה ארוכה או כפולה)</button>
 </div>
 
 <!-- LEVEL MAP SCREEN -->
@@ -353,6 +369,13 @@ body {
   </div>
   <div class="goals-row" id="goals-row"></div>
   <button class="btn btn-small" onclick="exitGame()">← יציאה</button>
+</div>
+
+<!-- PARENT SCREEN -->
+<div id="screen-parent" class="screen" style="justify-content:flex-start;overflow-y:auto;max-height:100dvh;padding-bottom:40px">
+  <div class="map-title-card"><div class="map-title">📊 מעקב להורים</div></div>
+  <div id="parent-body" style="width:100%"></div>
+  <button class="btn btn-small" onclick="showTitle()">← חזרה</button>
 </div>
 
 <!-- RESULT SCREEN -->
@@ -492,10 +515,21 @@ let state = loadState();
 let game  = {};
 
 function loadState() {
-  try { const s = localStorage.getItem('football-math-v5'); if (s) return JSON.parse(s); } catch(e) {}
-  return { stars: {} };
+  try { const s = localStorage.getItem('football-math-v5'); if (s) { const o = JSON.parse(s); o.stars = o.stars||{}; o.log = o.log||[]; o.hard = o.hard||{}; return o; } } catch(e) {}
+  return { stars: {}, log: [], hard: {} };
 }
-function saveState() { localStorage.setItem('football-math-v5', JSON.stringify(state)); }
+function saveState() { try { localStorage.setItem('football-math-v5', JSON.stringify(state)); } catch(e) {} }
+function logSession(status) {
+  if (!game || game.logged) return; game.logged = true;
+  state.log.push({ t: Date.now(), d: game.levelId, ok: game.correct, wrong: 3 - game.lives, st: status });
+  if (state.log.length > 1500) state.log = state.log.slice(-1500);
+  saveState();
+}
+function logExercise(q, wasWrong) {
+  const k = q.display.replace(' = ?','');
+  const h = state.hard[k] || (state.hard[k] = { n: 0, w: 0 });
+  h.n++; if (wasWrong) h.w++;
+}
 
 // ===== SCREENS =====
 function showScreen(id) {
@@ -504,7 +538,7 @@ function showScreen(id) {
 }
 function showTitle()    { showScreen('title'); }
 function showLevelMap() { renderLevelMap(); showScreen('map'); }
-function exitGame()     { clearDragListeners(); showLevelMap(); }
+function exitGame()     { clearDragListeners(); if (game && !game.logged && (game.qi>0 || game.lives<3)) logSession('quit'); showLevelMap(); }
 
 // ===== DIFFICULTY SCREEN =====
 function renderLevelMap() {
@@ -767,6 +801,7 @@ function checkAnswer(val, goalPost) {
   const ball = document.getElementById('drag-ball');
   ball.classList.add('locked');
 
+  logExercise(q, val !== q.answer); saveState();
   if (val === q.answer) {
     // ✅ CORRECT — silent, just visual flash
     game.correct++; game.qi++;
@@ -794,6 +829,41 @@ function checkAnswer(val, goalPost) {
   }
 }
 
+
+// ===== PARENT AREA =====
+(function(){
+  const b = document.getElementById('parent-btn'); let tm = null;
+  const open = () => { tm = null; b.classList.remove('holding'); renderParent(); showScreen('parent'); };
+  const start = e => { if (tm) return; b.classList.add('holding'); tm = setTimeout(open, 1000); };
+  const stop = () => { clearTimeout(tm); tm = null; b.classList.remove('holding'); };
+  b.addEventListener('pointerdown', start);
+  ['pointerup','pointercancel','pointerleave'].forEach(ev => b.addEventListener(ev, stop));
+  b.addEventListener('contextmenu', e => e.preventDefault());
+  // גיבוי: לחיצה כפולה מהירה (למקרה שהלחיצה הארוכה לא נתפסת)
+  let last = 0; b.addEventListener('click', () => { const n = Date.now(); if (n - last < 500) { stop(); open(); } last = n; });
+})();
+function dayKey(t) { const d=new Date(t); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function renderParent() {
+  const L = state.log;
+  const tot = L.length, pass = L.filter(x=>x.st==='pass').length, fail = L.filter(x=>x.st==='fail').length;
+  const days = {};
+  L.forEach(x => { const k = dayKey(x.t); const d = days[k] || (days[k] = {g:0,p:0,f:0,q:0,ok:0,w:0}); d.g++; d[x.st==='pass'?'p':x.st==='fail'?'f':'q']++; d.ok += x.ok; d.w += x.wrong; });
+  const keys = Object.keys(days).sort().reverse().slice(0, 30);
+  const fmt = k => { const [y,m,d]=k.split('-'); return `${+d}/${+m}`; };
+  const rows = keys.map(k => { const d=days[k]; return `<tr><td>${fmt(k)}</td><td>${d.g}</td><td class="ok">${d.p}</td><td class="bad">${d.f}</td><td>${d.q}</td><td>${d.ok}</td><td class="bad">${d.w}</td></tr>`; }).join('');
+  const names = {10:'עד 10',15:'עד 15',20:'עד 20'};
+  const diffRows = [10,15,20].map(n => { const g=L.filter(x=>x.d==n); if(!g.length) return ''; return `<tr><td>${names[n]}</td><td>${g.length}</td><td class="ok">${g.filter(x=>x.st==='pass').length}</td><td class="bad">${g.filter(x=>x.st==='fail').length}</td><td>${'⭐'.repeat(state.stars[n]||0)||'—'}</td></tr>`; }).join('');
+  const hard = Object.entries(state.hard).filter(([k,v])=>v.w>0).sort((a,b)=>(b[1].w/b[1].n)-(a[1].w/a[1].n)||b[1].w-a[1].w).slice(0,8)
+    .map(([k,v])=>`<tr><td style="direction:ltr;unicode-bidi:bidi-override">${k}</td><td>${v.n}</td><td class="bad">${v.w}</td><td>${Math.round(100*v.w/v.n)}%</td></tr>`).join('');
+  document.getElementById('parent-body').innerHTML = tot===0 ? '<div class="p-box">עדיין אין נתונים. אחרי המשחק הראשון הכול יופיע כאן.</div>' : `
+    <div class="p-cards"><div class="p-card"><b>${tot}</b><span>משחקים</span></div><div class="p-card"><b style="color:#1a8a3a">${pass}</b><span>הצליח</span></div><div class="p-card"><b style="color:#d6202e">${fail}</b><span>לא הצליח</span></div></div>
+    <div class="p-box"><h3>לפי יום</h3><table class="p-table"><tr><th>יום</th><th>משחקים</th><th>הצליח</th><th>נכשל</th><th>יצא באמצע</th><th>נכונות</th><th>טעויות</th></tr>${rows}</table></div>
+    <div class="p-box"><h3>לפי רמת קושי</h3><table class="p-table"><tr><th>רמה</th><th>משחקים</th><th>הצליח</th><th>נכשל</th><th>כוכבים</th></tr>${diffRows}</table></div>
+    ${hard?`<div class="p-box"><h3>התרגילים הכי קשים לו</h3><table class="p-table"><tr><th>תרגיל</th><th>פעמים</th><th>טעויות</th><th>% טעות</th></tr>${hard}</table></div>`:''}
+    <div style="text-align:center"><button class="p-reset" onclick="resetParentData()">איפוס נתוני המעקב</button></div>`;
+}
+function resetParentData() { if (confirm('למחוק את כל נתוני המעקב?')) { state.log=[]; state.hard={}; saveState(); renderParent(); } }
+
 // ===== OVERLAYS =====
 function showRedCard() {
   document.getElementById('redcard-text').textContent = ['נסה שוב! 💪','אופס! 🙈','תחשוב טוב! 🤔'][Math.floor(Math.random()*3)];
@@ -812,6 +882,7 @@ function endGame() {
   const prev = state.stars[game.levelId]||0;
   if (stars>prev) state.stars[game.levelId]=stars;
 
+  logSession(passed ? 'pass' : 'fail');
   saveState();
 
   { const rk=document.getElementById('res-kid');
